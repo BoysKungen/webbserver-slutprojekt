@@ -1,8 +1,20 @@
 <%if result == nil%>
 <p>Id does not exist</p>
 <%else%>
-<%result.each do |i|%>
-	<p><%=i%></p>
+<div class="nameholder">
+<h1><%=id%></h1>
+<h3><%=result[0]%></h3>
+</div>
+<div class="stats">
+<%result.each_with_index do |i, x|%>
+	<%if i == result[0]%>
+	<%next%>
+	<%end%>
+	<div class="stat">
+		<img src=<%="/img/"+stats[x].to_s + "-icon.webp"%>> 
+		<p><%=i%></p>
+	</div>
 <%end%>
 <%end%>
+</div>
 <a href="/">Back</a>

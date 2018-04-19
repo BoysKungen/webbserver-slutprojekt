@@ -2,10 +2,15 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 
-STATS = ["Total: ", "Attack: ", "Defense: ", "Strength: ","Hitpoints: ", "Ranged: ", "Prayer: ", "Magic: ", "Cooking: ", "Woodcutting: ", "Fletching: ","Fishing: ", "Firemaking: ", "Crafting: ","Smithing: ","Mining: ", "Herblore: ","Agility: ","Thieving: ", "Slayer: ", "Farming: ", "Runecrafting: " ,"Hunter: ", "Construction: "]
+STATS = ["Total", "Attack", "Defense", "Strength","Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching","Fishing", "Firemaking", "Crafting","Smithing","Mining", "Herblore","Agility","Thieving", "Slayer", "Farming", "Runecrafting" ,"Hunter", "Construction"]
 
 get('/') do
 	erb(:index)
+end
+
+get('/view/') do
+	result = nil
+	erb(:view, locals:{result:result})
 end
 
 get('/view/:id') do
@@ -20,10 +25,10 @@ get('/view/:id') do
 		result = nil
 	else 
 		STATS.each_with_index do |i,x|
-			result << i + stats[x].to_s
+			result << i + ": " + stats[x].to_s
 		end
 	end
-	erb(:view, locals:{result:result})
+	erb(:view, locals:{result:result, id:id, stats:STATS})
 end
 
 get('/login') do
