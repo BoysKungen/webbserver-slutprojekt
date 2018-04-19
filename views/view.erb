@@ -1,5 +1,8 @@
 <%if result[0] == nil%>
 <p>Id does not exist</p>
-<a href="/">Back</a>
 <%else%>
+<%result.each do |i|%>
+	<p><%=i%></p>
 <%end%>
+<%end%>
+<a href="/">Back</a>

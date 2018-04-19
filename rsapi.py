@@ -7,7 +7,7 @@ import json
 jsondata = "http://mooshe.pw/files/items_osrs.json"
 plyrurl = "http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
 geurl = "http://services.runescape.com/m=itemdb_oldschool/viewitem?obj="
-stats = ["Total: ", "Attack: ", "Defense: ", "Strength: ",
+STATS = ["Total: ", "Attack: ", "Defense: ", "Strength: ",
  		"Hitpoints: ", "Ranged: ", "Prayer: ", "Magic: ", 
  		"Cooking: ", "Woodcutting: ", "Fletching: ", 
  		"Fishing: ", "Firemaking: ", "Crafting: ","Smithing: ","Mining: ",
@@ -23,7 +23,7 @@ def getStats(name : str):
 	for i in range(len(arr)):
 		if i%2 == 1:
 			try:
-				statarray.append(stats[statindex]+arr[i])
+				statarray.append(STATS[statindex]+arr[i])
 				statindex += 1
 				i += 2
 				#returns array of all the levels of a player(name)
@@ -72,7 +72,7 @@ def getItemInfo(itemname):
 
 
 def getStatList():
-	return ["Total: ", "Attack: ", "Defense: ", "Strength: ",
+	return [ "Total: ", "Attack: ", "Defense: ", "Strength: ",
  		"Hitpoints: ", "Ranged: ", "Prayer: ", "Magic: ", 
  		"Cooking: ", "Woodcutting: ", "Fletching: ", 
  		"Fishing: ", "Firemaking: ", "Crafting: ","Smithing: ","Mining: ",
