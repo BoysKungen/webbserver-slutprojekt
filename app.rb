@@ -16,13 +16,22 @@ get('/view/:id') do
 	stats = file.read
 	stats = JSON.parse(stats)
 	file.close
-	STATS.each_with_index do |i,x|
-		result << i + stats[x].to_s
+	if stats[0] == nil
+		result = nil
+	else 
+		STATS.each_with_index do |i,x|
+			result << i + stats[x].to_s
+		end
 	end
 	erb(:view, locals:{result:result})
 end
 
 get('/login') do
+	erb(:login)
+end
+
+get('/register') do
+	erb(:register)
 end
 
 post('/search') do
