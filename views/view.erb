@@ -1,6 +1,8 @@
 <%if result == nil%>
 <p>Id does not exist</p>
+<a href="/">Back</a>
 <%else%>
+<a href="/">Back</a>
 <div class="nameholder">
 <h1><%=id%></h1>
 <h3><%=result[0]%></h3>
@@ -11,10 +13,9 @@
 	<%next%>
 	<%end%>
 	<div class="stat">
-		<img src=<%="/img/"+stats[x].to_s + "-icon.webp"%>> 
+		<img src=<%="/img/"+stats[x].to_s + "-icon.webp"%> alt=<%=stats[x]%>> 
 		<p><%=i%></p>
 	</div>
 <%end%>
 <%end%>
 </div>
-<a href="/">Back</a>

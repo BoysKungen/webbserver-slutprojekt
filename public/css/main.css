@@ -1,9 +1,38 @@
 body{
 	background:orange;
+	margin:0;
+	padding:0;
 }
 
 .stat{
 	display:flex;
 	flex-direction: row;
 	align-items:center;
+	margin:5px;
+}
+
+.stat img{
+	margin-right: 5px;
+}
+.header{
+	background:black;
+	width:100%;
+	height:52px;
+}
+
+
+.nameholder{
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	
+}
+
+.stats{
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	height:;
+
+	word-wrap: break-word;
 }

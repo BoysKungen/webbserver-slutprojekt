@@ -16,7 +16,11 @@ end
 get('/view/:id') do
 	result = []
 	id = params[:id]
+	if id.include? "%20"
+		id = id.sub("%20", " ")
+	end
 	run = `python statnames.py #{id}`
+	p run
 	file = File.open("stats.txt", "r")
 	stats = file.read
 	stats = JSON.parse(stats)
@@ -40,7 +44,11 @@ get('/register') do
 end
 
 post('/search') do
-	redirect('/view/'+params[:id])
+	id = params[:id]
+	if id.include? " "
+		id = id.sub(" ", "%20")
+	end
+	redirect('/view/'+id)
 end
 
 

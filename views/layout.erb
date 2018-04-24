@@ -4,6 +4,12 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style type="text/css">body, a:hover {cursor: url(http://cur.cursors-4u.net/nature/nat-9/nat803.cur), progress !important;}</style>
 <body>
+	<div class="header">
+		<form action="/search" method="POST">
+			<input type="text" name="id" placeholder="Search">
+			<input type="submit" value="Search">
+		</form>
+	</div>
 	<%=yield%>
 </body>
 </html>
