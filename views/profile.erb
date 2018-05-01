@@ -1,0 +1,15 @@
+<%if id[0] == nil%>
+<p>User does not exist</p>
+<%else%>
+<p><%=id[0][0]%></p>
+
+<p>Favorites:</p>
+<%if favs[0] != nil%>
+<%favs[0].each do |i|%>
+<li>
+<a href="/user/<%=i%>"><%=i%></a>
+</li>
+<%end%>
+<%end%>
+<%end%>
+<a href="/">Back</a>
