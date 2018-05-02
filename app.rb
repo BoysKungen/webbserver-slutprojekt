@@ -51,5 +51,25 @@ post('/search') do
 	redirect('/view/'+id)
 end
 
+post('/usersearch') do
+	id = params[:id]
+	if id.include? " "
+		id = id.sub(" ", "%20")
+	end
+	redirect('/user/'+id)
+end
+
+get('/user/:id') do
+	id = params[:id]
+	if id.include? "%20"
+		id = id.sub("%20", " ")
+	end
+	db = SQLite3::Database.new('./db/rssite.db')
+	idcheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE '#{id.downcase}'")
+	favs = db.execute("SELECT favorites FROM UserFavs WHERE LOWER(name) LIKE '#{id.downcase}'")
+	print favs
+
+	erb(:profile, locals:{id:idcheck, favs:favs})
+end
 
 
