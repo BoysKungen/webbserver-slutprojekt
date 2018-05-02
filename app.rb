@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sqlite3'
 require 'json'
-
 STATS = ["Total", "Attack", "Defense", "Strength","Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching","Fishing", "Firemaking", "Crafting","Smithing","Mining", "Herblore","Agility","Thieving", "Slayer", "Farming", "Runecrafting" ,"Hunter", "Construction"]
 
 get('/') do
@@ -20,7 +19,6 @@ get('/view/:id') do
 		id = id.sub("%20", " ")
 	end
 	run = `python statnames.py #{id}`
-	p run
 	file = File.open("stats.txt", "r")
 	stats = file.read
 	stats = JSON.parse(stats)
@@ -41,6 +39,21 @@ end
 
 get('/register') do
 	erb(:register)
+end
+
+post('/register_check') do
+	username = params[:username]
+	password = params[:password]
+	password2 = params[:password2]
+
+	if password != password2
+		errmsg = "Passwords must match!"
+		redirect = "/register"
+		erb(:error, locals:{errmsg:errmsg, redirect:redirect})
+	else
+
+	end
+
 end
 
 post('/search') do
