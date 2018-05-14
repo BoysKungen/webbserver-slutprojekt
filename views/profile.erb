@@ -1,15 +1,30 @@
 <%if id[0] == nil%>
 <p>User does not exist</p>
 <%else%>
-<p><%=id[0][0]%></p>
+<div id="friendzone">
+<p><%=id[0][0]%></p>  <a href="#">Friend</a>
+</div>
 
-<p>Favorites:</p>
-<%if favs[0] != nil%>
-<%favs.each do |i|%>
+<p>Friends:</p>
+<%if friends[0] != nil%>
+<%friends.each do |i|%>
 <li>
 <a href="/user/<%=i[0]%>"><%=i[0]%></a>
 </li>
 <%end%>
 <%end%>
+
+<p>Favorites:</p>
+<%if favorites[0] != nil%>
+<%favorites.each do |i|%>
+<li>
+<a href="/view/<%=i[0]%>"><%=i[0]%></a>
+</li>
 <%end%>
+<%end%>
+<% if @search %>
+  <p><%= @search %></p>
+<% end %>
+<%end%>
+
 <a href="/">Back</a>

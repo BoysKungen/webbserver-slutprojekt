@@ -1,14 +1,44 @@
 <!DOCTYPE html>
 <html>
 <link rel="stylesheet" href="/css/main.css">
+<script>
+	function toggleLogin() {
+    var x = document.getElementById("login");
+    var y = document.getElementById("logout");
+    x.style.display = "none";
+    y.style.display = "block";
+}	function toggleLogout() {
+    var x = document.getElementById("login");
+    var y = document.getElementById("logout");
+    x.style.display = "block";
+    y.style.display = "none";
+}
+
+
+</script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style type="text/css">body, a:hover {cursor: url(http://cur.cursors-4u.net/nature/nat-9/nat803.cur), progress !important;}</style>
 <body>
 	<div class="header">
+		<div class="headerbox logininfo">
+		<%if $curruser == nil%>
+		<a href="/login">Login</a>
+		<a href="/register">Register</a>
+		<%else%>
+		<a href="/logout">Logout</a><a href="/user/<%=$curruser%>"><%=$curruser%></a>
+		<%end%>
+		</div>
+		<div class="searchbar headerbox">
 		<form action="/search" method="POST">
 			<input type="text" name="id" placeholder="Search">
 			<input type="submit" value="Search">
 		</form>
+		<form action="/usersearch" method="POST">
+		    <input type="text" name="id" placeholder="Search Users">
+		    <input type="submit" value="Search">
+		</form>
+		</div>
 	</div>
 	<%=yield%>
 </body>
