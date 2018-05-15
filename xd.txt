@@ -1,1 +1,0 @@
-['Total: 1174', 'Attack: 70', 'Defense: 70', 'Strength: 70', 'Hitpoints: 76', 'Ranged: 78', 'Prayer: 45', 'Magic: 75', 'Cooking: 41', 'Woodcutting: 62', 'Fletching: 50', 'Fishing: 59', 'Firemaking: 43', 'Crafting: 53', 'Smithing: 53', 'Mining: 59', 'Herblore: 43', 'Agility: 60', 'Thieving: 37', 'Slayer: 55', 'Farming: 41', 'Runecrafting: 9', 'Hunter: 24', 'Construction: 1']
