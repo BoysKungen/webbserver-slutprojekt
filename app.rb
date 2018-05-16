@@ -2,13 +2,14 @@ require 'sinatra'
 require 'sqlite3'
 require 'json'
 require 'bcrypt'
-#require_relative './model/module.rb'
+require 'URI'
+require_relative './model/module.rb'
 STATS = ["Total", "Attack", "Defense", "Strength","Hitpoints", "Ranged", "Prayer", "Magic", "Cooking", "Woodcutting", "Fletching","Fishing", "Firemaking", "Crafting","Smithing","Mining", "Herblore","Agility","Thieving", "Slayer", "Farming", "Runecrafting" ,"Hunter", "Construction"]
 
 class App < Sinatra::Base
 
 	enable :sessions
-	#include RssiteDB
+	include Rssite
 	$curruser = nil
 
 	get('/') do
@@ -22,10 +23,7 @@ class App < Sinatra::Base
 
 	get('/view/:id') do
 		result = []
-		id = params[:id]
-		if id.include? "%20"
-			id = id.sub("%20", " ")
-		end
+		id = URI.unescape(params[:id])
 		run = `python statnames.py #{id}`
 		file = File.open("stats.txt", "r")
 		stats = file.read
@@ -42,8 +40,8 @@ class App < Sinatra::Base
 		if session[:user] != nil && result != nil
 			session[:favorites] = id
 		end
-
-		db = SQLite3::Database.new('./db/rssite.db')
+		
+		db = db_connect()
 
 		followers = db.execute("SELECT COUNT(favorites) FROM UserFavs WHERE LOWER(favorites) LIKE ?", [id.downcase])[0][0]
 		if $curruser != nil
@@ -64,32 +62,28 @@ class App < Sinatra::Base
 	end
 
 	get('/favorite/:id') do
-		id = params[:id]
-		db = SQLite3::Database.new('./db/rssite.db')
+		id = URI.unescape(params[:id])
+		db = db_connect()
 		db.execute("INSERT INTO UserFavs (favorites, name) VALUES (?, ?)", [id.downcase, $curruser])
-		if id.include? " "
-			id = id.sub(" ", "%20")
-		end
+		id = URI.escape(params[:id])
 		redirect("/view/#{id}")
 	end
 
 	get('/unfavorite/:id') do
-		id = params[:id]
-		db = SQLite3::Database.new('./db/rssite.db')
+		id = URI.unescape(params[:id])
+		db = db_connect()
 		db.execute("DELETE FROM UserFavs WHERE LOWER(favorites) LIKE ? AND LOWER(name) LIKE ?", [id, $curruser])
-		if id.include? " "
-			id = id.sub(" ", "%20")
-		end
+		id = URI.escape(params[:id])
 		redirect("/view/#{id}")
 	end
 
 	post('/login_check') do
 		username = params[:username]
 		password = params[:password]
-		db = SQLite3::Database.new('./db/rssite.db')
+		db = db_connect()
 
-		usercheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE '#{username.downcase}'")
-		passcheck = db.execute("SELECT password FROM Users WHERE LOWER(name) LIKE '#{username.downcase}'")
+		usercheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE ?", [username.downcase])
+		passcheck = db.execute("SELECT password FROM Users WHERE LOWER(name) LIKE ?", [username.downcase])
 
 		begin
 			passhash = BCrypt::Password.new(passcheck[0][0])
@@ -114,12 +108,12 @@ class App < Sinatra::Base
 	end
 
 	post('/register_check') do
-		db = SQLite3::Database.new('./db/rssite.db')
+		db = db_connect()
 		username = params[:username]
 		password = params[:password]
 		password2 = params[:password2]
 
-		usercheck = db.execute("SELECT name FROM Users WHERE name LIKE '#{username.downcase}'")
+		usercheck = db.execute("SELECT name FROM Users WHERE name LIKE ?", [username.downcase])
 
 		if password != password2
 			errmsg = "Passwords must match!"
@@ -157,32 +151,23 @@ class App < Sinatra::Base
 	end
 
 	post('/search') do
-		id = params[:id]
-		if id.include? " "
-			id = id.sub(" ", "%20")
-		end
+		id = URI.escape(params[:id])
 		redirect('/view/'+id)
 	end
 
 	post('/usersearch') do
-		id = params[:id]
-		if id.include? " "
-			id = id.sub(" ", "%20")
-		end
+		id = URI.escape(params[:id])
 		redirect('/user/'+id)
 	end
 
 	get('/user/:id') do
-		id = params[:id]
-		if id.include? "%20"
-			id = id.sub("%20", " ")
-		end
-		db = SQLite3::Database.new('./db/rssite.db')
+		id = URI.unescape(params[:id])
+		db = db_connect()
 		#friend = db.execute("")
 		friend = nil
-		idcheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE '#{id.downcase}'")
-		friends = db.execute("SELECT friend FROM UserFriends WHERE LOWER(name) LIKE '#{id.downcase}'")
-		favorites = db.execute("SELECT favorites FROM UserFavs WHERE LOWER(name) LIKE '#{id.downcase}'")
+		idcheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE ?", [id.downcase])
+		friends = db.execute("SELECT friend FROM UserFriends WHERE LOWER(name) LIKE ?", [id.downcase])
+		favorites = db.execute("SELECT favorites FROM UserFavs WHERE LOWER(name) LIKE ?", [id.downcase])
 
 		erb(:profile, locals:{id:idcheck, friends:friends, favorites:favorites, friend:friend})
 	end
