@@ -5,7 +5,7 @@
 <a href="/">Back</a>
 <div class="nameholder">
 <h1><%=id%></h1>
-<%if $curruser != nil%>
+<%if session[:user] != nil%>
 <%if followed != nil%>
 <a href="/unfavorite/<%=id%>">Unfavorite</a>
 <%else%>
@@ -23,7 +23,7 @@
 	<%next%>
 	<%end%>
 	<div class="stat">
-		<img src=<%="/img/"+stats[x].to_s + "-icon.webp"%> alt=<%=stats[x]%>> 
+		<img src=<%="/img/"+stats[x].to_s + "-icon.webp"%> alt=<%=stats[x]%>>
 		<p><%=i%></p>
 	</div>
 <%end%>

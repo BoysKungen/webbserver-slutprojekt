@@ -10,7 +10,6 @@ class App < Sinatra::Base
 
 	enable :sessions
 	include Rssite
-	$curruser = nil
 
 	get('/') do
 		erb(:index)
@@ -25,13 +24,10 @@ class App < Sinatra::Base
 		result = []
 		id = URI.unescape(params[:id])
 		run = `python statnames.py #{id}`
-		file = File.open("stats.txt", "r")
-		stats = file.read
-		stats = JSON.parse(stats)
-		file.close
+		stats = JSON.parse(run)
 		if stats[0] == nil
 			result = nil
-		else 
+		else
 			STATS.each_with_index do |i,x|
 				result << i + ": " + stats[x].to_s
 			end
@@ -40,13 +36,13 @@ class App < Sinatra::Base
 		if session[:user] != nil && result != nil
 			session[:favorites] = id
 		end
-		
+
 		db = db_connect()
 
 		followers = db.execute("SELECT COUNT(favorites) FROM UserFavs WHERE LOWER(favorites) LIKE ?", [id.downcase])[0][0]
-		if $curruser != nil
+		if session[:user] != nil
 			begin
-				followed = db.execute("SELECT favorites FROM UserFavs WHERE LOWER(name) LIKE '#{$curruser.downcase}' AND LOWER(favorites) LIKE ?", [id.downcase])[0][0]
+				followed = db.execute("SELECT favorites FROM UserFavs WHERE id LIKE ? AND LOWER(favorites) LIKE ?", [session[:id],id.downcase])[0][0]
 			rescue
 				followed = nil
 			end
@@ -64,7 +60,7 @@ class App < Sinatra::Base
 	get('/favorite/:id') do
 		id = URI.unescape(params[:id])
 		db = db_connect()
-		db.execute("INSERT INTO UserFavs (favorites, name) VALUES (?, ?)", [id.downcase, $curruser])
+		db.execute("INSERT INTO UserFavs (favorites, name, id) VALUES (?, ?, ?)", [id.downcase, session[:user], session[:id]])
 		id = URI.escape(params[:id])
 		redirect("/view/#{id}")
 	end
@@ -72,7 +68,7 @@ class App < Sinatra::Base
 	get('/unfavorite/:id') do
 		id = URI.unescape(params[:id])
 		db = db_connect()
-		db.execute("DELETE FROM UserFavs WHERE LOWER(favorites) LIKE ? AND LOWER(name) LIKE ?", [id, $curruser])
+		db.execute("DELETE FROM UserFavs WHERE id LIKE ?", [session[:id]])
 		id = URI.escape(params[:id])
 		redirect("/view/#{id}")
 	end
@@ -82,7 +78,7 @@ class App < Sinatra::Base
 		password = params[:password]
 		db = db_connect()
 
-		usercheck = db.execute("SELECT name FROM Users WHERE LOWER(name) LIKE ?", [username.downcase])
+		userid = db.execute("SELECT id FROM Users WHERE LOWER(name) LIKE ?", [username.downcase])
 		passcheck = db.execute("SELECT password FROM Users WHERE LOWER(name) LIKE ?", [username.downcase])
 
 		begin
@@ -92,8 +88,8 @@ class App < Sinatra::Base
 		end
 		if passhash == password
 			session[:user] = params[:username]
-			$curruser = session[:user]
-			errmsg = "Login Successful as #{$curruser}!"
+			session[:id] = userid
+			errmsg = "Login Successful as #{session[:user]}!"
 			redirect = "/"
 			erb(:error, locals:{errmsg:errmsg, redirect:redirect})
 		else
@@ -146,7 +142,7 @@ class App < Sinatra::Base
 	get('/logout') do
 		session.delete(:user)
 		session.delete(:favorites)
-		$curruser = nil
+		session[:user] = nil
 		redirect('/')
 	end
 
@@ -172,4 +168,3 @@ class App < Sinatra::Base
 		erb(:profile, locals:{id:idcheck, friends:friends, favorites:favorites, friend:friend})
 	end
 end
-

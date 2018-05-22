@@ -7,12 +7,11 @@
     <input type="text" name="id" placeholder="Search Users">
     <input type="submit" value="Search">
 </form>
-<%if $curruser == nil%>
+<%if session[:user] == nil%>
 
 <a href="/login">Login</a>
 <a href="/register">Register</a>
 <%else%>
-<p><%=$curruser%></p><a href="/logout">Logout</a>
+<p><%=session[:user]%></p><a href="/logout">Logout</a>
 <%end%>
 </div>
-

@@ -22,11 +22,11 @@
 <body>
 	<div class="header">
 		<div class="headerbox logininfo">
-		<%if $curruser == nil%>
+		<%if session[:user] == nil%>
 		<a href="/login">Login</a>
 		<a href="/register">Register</a>
 		<%else%>
-		<a href="/logout">Logout</a><a href="/user/<%=$curruser%>"><%=$curruser%></a>
+		<a href="/logout">Logout</a><a href="/user/<%=session[:user]%>"><%=session[:user]%></a>
 		<%end%>
 		</div>
 		<div class="searchbar headerbox">
