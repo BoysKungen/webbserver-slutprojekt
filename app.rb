@@ -49,7 +49,7 @@ class App < Sinatra::Base
 		else
 			followed = nil
 		end
-		p followed
+
 		erb(:view, locals:{result:result, id:id, stats:STATS, followers:followers, followed:followed})
 	end
 
